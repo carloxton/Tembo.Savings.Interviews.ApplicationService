@@ -3,6 +3,7 @@
 ## Assumptions
 
 ## Decisions
+I have decided to do this exercise to demonstrate the TDD process and design decisions for developing testable code
 
 ### The plan
 1. Get the test for ProductOne passing
@@ -16,10 +17,12 @@
 ### Potential enhancements
 * FluentAssertions library for tests
 * Global using for XUnit, Moq etc
+* Create factory class for creating processors and inject into Application processor
+* Fix all .Net 8 warnings e.g. non-nullable properties
 
 ## Todo
+* Add dependency injection
+* Add better test case for date tests
+* Add unit test for DateWrapper
+* Add unit tests for ApplicationProcessor 
 
-* Add testing packages
-* Assume that only ProductOne available for now
-* TEST - not implemented when age not be between 18 and 39 test 
-	
