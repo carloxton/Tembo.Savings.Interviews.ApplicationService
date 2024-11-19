@@ -5,14 +5,14 @@ using Services.Common.Abstractions.Abstractions;
 using Services.Common.Abstractions.Model;
 
 namespace Services.Applications.Tests;
-public class ProductOneTests
-{
 
+public class ProductOneProcessorTests
+{
     [Theory]
     [InlineData(2007, 1 ,1)]
     [InlineData(1983, 1, 1)]
     // Add better edge cases
-    public async Task WhenAgeBetweenNot18And39_ExpectFailureEvent(int yearOfBirth, int monthOfBirth, int dayOfBirth)
+    public async Task WhenAgeNotBetween18And39_ExpectFailureEvent(int yearOfBirth, int monthOfBirth, int dayOfBirth)
     {
         // Arrange
         Mock<IAdministrationService> service = new();
@@ -24,7 +24,7 @@ public class ProductOneTests
         Mock<IKycService> kyc = new();
         Mock<IBus> bus = new();
         DateWrapper dateWrapper = new(TestFakes.Today);
-        IApplicationProcessor processor = new ApplicationProcessor(
+        ProductOneProcessor processor = new(
             service.Object,
             mapper.Object,
             kyc.Object,
@@ -32,7 +32,7 @@ public class ProductOneTests
             dateWrapper);
             
         // Act
-        await processor.Process(TestFakes.Application(yearOfBirth, monthOfBirth, dayOfBirth));
+        await processor.Process(TestFakes.ApplicationOne(yearOfBirth, monthOfBirth, dayOfBirth));
 
         // Assert
         bus.Verify(v => v.PublishAsync(It.IsAny<ApplicationFailed>()));        
@@ -55,14 +55,14 @@ public class ProductOneTests
             .ReturnsAsync(Result.Success(new KycReport(Guid.Empty, true)));
         Mock<IBus> bus = new();
         DateWrapper dateWrapper = new(TestFakes.Today);
-        IApplicationProcessor processor = new ApplicationProcessor(
+        ProductOneProcessor processor = new (
             service.Object,
             mapper.Object,
             kyc.Object,
             bus.Object,
             dateWrapper);
         
-        await processor.Process(TestFakes.Application(yearOfBirth, monthOfBirth, dayOfBirth));
+        await processor.Process(TestFakes.ApplicationOne(yearOfBirth, monthOfBirth, dayOfBirth));
 
         bus.Verify(v => v.PublishAsync(It.IsAny<InvestorCreated>()));
         bus.Verify(v => v.PublishAsync(It.IsAny<AccountCreated>()));
@@ -83,14 +83,14 @@ public class ProductOneTests
         kyc.Setup(m => m.GetKycReportAsync(It.IsAny<User>()))
             .ReturnsAsync(Result.Success(new KycReport(Guid.Empty, true)));
         DateWrapper dateWrapper = new(TestFakes.Today);
-        IApplicationProcessor applicationProcessor = new ApplicationProcessor(
+        ProductOneProcessor processor = new(
             service.Object,
             mapper.Object,
             kyc.Object,
             bus.Object,
             dateWrapper);
                 
-        await applicationProcessor.Process(TestFakes.Application());
+        await processor.Process(TestFakes.ApplicationOne());
 
         bus.Verify(v => v.PublishAsync(It.IsAny<InvestorCreated>()));
         bus.Verify(v => v.PublishAsync(It.IsAny<AccountCreated>()));
@@ -107,14 +107,14 @@ public class ProductOneTests
             .ReturnsAsync(Result.Failure<KycReport>(new Error("", "", "")));
         Mock<IBus> bus = new();
         DateWrapper dateWrapper = new(TestFakes.Today);
-        IApplicationProcessor processor = new ApplicationProcessor(
+        ProductOneProcessor processor = new(
             service.Object,
             mapper.Object,
             kyc.Object,
             bus.Object,
             dateWrapper);        
 
-        await processor.Process(TestFakes.Application());
+        await processor.Process(TestFakes.ApplicationOne());
 
         bus.Verify(v => v.PublishAsync(It.IsAny<KycFailed>()));
     }
@@ -129,14 +129,14 @@ public class ProductOneTests
             .ReturnsAsync(Result.Success(new KycReport(Guid.Empty, false)));
         Mock<IBus> bus = new();
         DateWrapper dateWrapper = new(TestFakes.Today);
-        IApplicationProcessor processor = new ApplicationProcessor(
+        ProductOneProcessor processor = new(
             service.Object,
             mapper.Object,
             kyc.Object,
             bus.Object,
             dateWrapper);        
 
-        await processor.Process(TestFakes.Application());
+        await processor.Process(TestFakes.ApplicationOne());
         
         bus.Verify(v => v.PublishAsync(It.IsAny<KycFailed>()));
     }

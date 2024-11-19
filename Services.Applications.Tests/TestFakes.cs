@@ -7,14 +7,32 @@ public static class TestFakes
 {
 
     public static DateTime Today => new DateTime(2024, 11, 19);
-    public static Application Application(int yearOfBirth, int monthOfBirth, int dayOfBirth)
+    
+    public static Application ApplicationOne(int yearOfBirth, int monthOfBirth, int dayOfBirth)
         => new Application
         {
+            ProductCode = ProductCode.ProductOne,
             Applicant = new User { DateOfBirth = new DateOnly(yearOfBirth, monthOfBirth, dayOfBirth) }
         };
-    public static Application Application()
+    
+    public static Application ApplicationOne()
         => new Application
         {
+            ProductCode = ProductCode.ProductOne,
+            Applicant = new User { DateOfBirth = new DateOnly(2000, 1, 1) }
+        };
+    
+    public static Application ApplicationTwo(int yearOfBirth, int monthOfBirth, int dayOfBirth)
+        => new Application
+        {
+            ProductCode = ProductCode.ProductTwo,
+            Applicant = new User { DateOfBirth = new DateOnly(yearOfBirth, monthOfBirth, dayOfBirth) }
+        };
+    
+    public static Application ApplicationTwo()
+        => new Application
+        {
+            ProductCode = ProductCode.ProductTwo,
             Applicant = new User { DateOfBirth = new DateOnly(2000, 1, 1) }
         };
 
